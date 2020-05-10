@@ -1,12 +1,8 @@
 {
   "name": "vue-single-file-component-to-js-compiler",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Compile Vue singne file components to JS format",
   "main": "index.js",
-  "dependencies": {
-    "through2": "~1.0.0",
-    "path": "^0.12.7"
-  },
   "repository": {
     "type": "git",
     "url": "git://github.com/helix-github/vue-single-file-component-to-js-compiler.git"
@@ -19,5 +15,9 @@
   ],
   "author": "Toka <toka@helix.ge>",
   "license": "MIT",
-  "homepage": "https://github.com/helix-github/vue-single-file-component-to-js-compiler"
+  "homepage": "https://github.com/helix-github/vue-single-file-component-to-js-compiler",
+  "dependencies": {
+    "path": "^0.12.7",
+    "through2": "^3.0.1"
+  }
 }
