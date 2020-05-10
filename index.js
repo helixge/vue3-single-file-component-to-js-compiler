@@ -11,7 +11,10 @@ module.exports = function (options) {
 
   function convertFormat(file) {
     let sourceContent = file.contents.toString();
-    let pathData = Path.parse(file.history[0]);
+    let pathData = Path.parse(file.path);
+
+    if (pathData.ext != '.vue')
+      return null;
 
     let groups = sourceContent.match(matcher).groups;
 
@@ -36,7 +39,10 @@ module.exports = function (options) {
 
   return Through.obj(function (file, enc, cb) {
     var content = convertFormat(file);
-    file.contents = new Buffer(content);
+
+    if (content != null)
+      file.contents = new Buffer(content);
+
     this.push(file);
     cb();
   });
