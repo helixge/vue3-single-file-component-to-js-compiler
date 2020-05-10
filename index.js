@@ -1,7 +1,12 @@
 var Through = require('through2');
 var Path = require('path');
 
-module.exports = function (/*options*/) {
+module.exports = function (options) {
+  options = options || {};
+  let ext = options.ext || 'js';
+  if (ext[0] != '.')
+    ext = '.' + ext;
+
   let matcher = /<template>(?<template>[\w\W]*?)<\/template>[\W]*?<script>[\W]*?export[\W]*?default[\W]*?(?<script>{[\w\W]*?)};[\W]*?<\/script>/;
 
   function convertFormat(file) {
@@ -21,7 +26,7 @@ module.exports = function (/*options*/) {
     let newPath = Path.join(
       file.base,
       Path.dirname(file.relative),
-      pathData.name + '.js',
+      pathData.name + ext,
     );
 
     file.path = newPath;
