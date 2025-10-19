@@ -2,7 +2,7 @@
 
 Converts Vue3 single component file:
 
-```
+```vue
 <template>
   <div>{{ text }}</div>
 </template>
@@ -21,7 +21,7 @@ export default {
 
 Into Vue component declaration in JS:
 
-```
+```js
 window.VueComponents = window.VueComponents || {};
 window.VueComponents['test-component'] = {
   data: function () {
@@ -38,7 +38,7 @@ window.VueComponents['test-component'] = {
 
 which can later be used to register components on the app instance:
 
-```
+```js
 const app = Vue.createApp({});
 
 if (window.VueComponents) {

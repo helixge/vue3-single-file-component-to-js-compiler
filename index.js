@@ -8,7 +8,22 @@ module.exports = function (options) {
     ext = '.' + ext
   }
 
-  const matcher = /<template>(?<template>[\w\W]*?)<\/template>[\W]*?<script>[\W]*?export[\W]*?default[\W]*?(?<script>{[\w\W]*?)};[\W]*?<\/script>/
+  const extract = function (sourceContent, sectionName) {
+    const sectionPatterns = {
+      template: /<template>([\w\W]*?)<\/template>/,
+      script: /<script>[\W]*?export[\W]*?default[\W]*?({[\w\W]*?});[\W]*?<\/script>/
+    }
+
+    const pattern = sectionPatterns[sectionName]
+    if (!pattern) {
+      return null
+    }
+
+    const match = sourceContent.match(pattern)
+    return match 
+      ? match[1] 
+      : null
+  }
 
   const convertFormat = function (file) {
     let sourceContent = file.contents.toString()
@@ -18,14 +33,16 @@ module.exports = function (options) {
       return null
     }
 
-    let groups = sourceContent.match(matcher).groups
+    const scriptContent = extract(sourceContent, 'script')
+    const templateContent = extract(sourceContent, 'template')
+
     let dest = "window.VueComponents = window.VueComponents || {};\n"
     dest += "window.VueComponents['"
     dest += pathData.name
     dest += "'] = "
-    dest += groups.script
+    dest += scriptContent
     dest += ',\ntemplate: `'
-    dest += groups.template.replace(/`/gi, '\\`')
+    dest += templateContent.replace(/`/gi, '\\`')
     dest += '`\n};'
 
     let newPath = path.join(
