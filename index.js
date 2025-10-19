@@ -1,50 +1,52 @@
-var Through = require('through2');
-var Path = require('path');
+const through = require('through2')
+const path = require('path')
 
 module.exports = function (options) {
-  options = options || {};
-  let ext = options.ext || 'js';
-  if (ext[0] != '.')
-    ext = '.' + ext;
+  options = options || {}
+  let ext = options.ext || 'js'
+  if (ext[0] != '.') {
+    ext = '.' + ext
+  }
 
-  let matcher = /<template>(?<template>[\w\W]*?)<\/template>[\W]*?<script>[\W]*?export[\W]*?default[\W]*?(?<script>{[\w\W]*?)};[\W]*?<\/script>/;
+  const matcher = /<template>(?<template>[\w\W]*?)<\/template>[\W]*?<script>[\W]*?export[\W]*?default[\W]*?(?<script>{[\w\W]*?)};[\W]*?<\/script>/
 
-  function convertFormat(file) {
-    let sourceContent = file.contents.toString();
-    let pathData = Path.parse(file.path);
+  const convertFormat = function (file) {
+    let sourceContent = file.contents.toString()
+    let pathData = path.parse(file.path)
 
-    if (pathData.ext != '.vue')
-      return null;
+    if (pathData.ext != '.vue') {
+      return null
+    }
 
-    let groups = sourceContent.match(matcher).groups;
+    let groups = sourceContent.match(matcher).groups
+    let dest = "window.VueComponents = window.VueComponents || {};\n"
+    dest += "window.VueComponents['"
+    dest += pathData.name
+    dest += "'] = "
+    dest += groups.script
+    dest += ',\ntemplate: `'
+    dest += groups.template.replace(/`/gi, '\\`')
+    dest += '`\n};'
 
-    let dest = "Vue.component('";
-    dest += pathData.name;
-    dest += "', ";
-    dest += groups.script;
-    dest += ',\ntemplate: `';
-    dest += groups.template.replace(/`/gi, '\\`');
-    dest += '`\n});';
-
-    let newPath = Path.join(
+    let newPath = path.join(
       file.base,
-      Path.dirname(file.relative),
+      path.dirname(file.relative),
       pathData.name + ext,
-    );
+    )
 
-    file.path = newPath;
+    file.path = newPath
 
-    return dest;
-  };
+    return dest
+  }
 
-  return Through.obj(function (file, enc, cb) {
-    var content = convertFormat(file);
+  return through.obj(function (file, enc, cb) {
+    var content = convertFormat(file)
 
-    if (content != null)
-      file.contents = new Buffer(content);
+    if (content != null) {
+      file.contents = Buffer.from(content)
+    }
 
-    this.push(file);
-    cb();
-  });
-};
-
+    this.push(file)
+    cb()
+  })
+}

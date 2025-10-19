@@ -1,7 +1,7 @@
-vue-single-file-component-to-js-compiler
-=====================
+# vue-single-file-component-to-js-compiler
 
-Converts Vue single component file:
+Converts Vue3 single component file:
+
 ```
 <template>
   <div>{{ text }}</div>
@@ -20,8 +20,10 @@ export default {
 ```
 
 Into Vue component declaration in JS:
+
 ```
-Vue.component('test-component', {
+window.VueComponents = window.VueComponents || {};
+window.VueComponents['test-component'] = {
   data: function () {
     return {
       text: "Example"
@@ -31,5 +33,19 @@ Vue.component('test-component', {
   template: `
   <div>{{ text }}</div>
 `
-});
+};
+```
+
+which can later be used to register components on the app instance:
+
+```
+const app = Vue.createApp({});
+
+if (window.VueComponents) {
+    Object.keys(window.VueComponents).forEach(function(componentName) {
+        app.component(componentName, window.VueComponents[componentName]);
+    });
+}
+
+app.mount(...);
 ```
