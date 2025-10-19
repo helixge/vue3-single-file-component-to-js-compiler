@@ -40,7 +40,7 @@ module.exports = function (options) {
     dest += "window.VueComponents['"
     dest += pathData.name
     dest += "'] = "
-    dest += scriptContent
+    dest += scriptContent.trim().replace(/}\s*$/, '').trim()
     dest += ',\ntemplate: `'
     dest += templateContent.replace(/`/gi, '\\`')
     dest += '`\n};'
