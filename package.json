@@ -3,6 +3,9 @@
   "version": "3.0.0",
   "description": "Compile Vue3 single file components to JS format",
   "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/helix-github/vue-single-file-component-to-js-compiler.git"
@@ -19,5 +22,8 @@
   "dependencies": {
     "path": "^0.12.7",
     "through2": "^4.0.2"
+  },
+  "devDependencies": {
+    "jest": "^30.2.0"
   }
 }
